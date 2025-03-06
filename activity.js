@@ -114,13 +114,9 @@ class Pokemon {
     
         console.log(`${attacker.name} attacked ${defender.name} for ${finalDamage} damage. ${defender.name} has ${defender.hp + defender.defense} HP left.`);
     
-        if (defender.hp <= 0) {
-            console.log(`${defender.name} has fainted.`);
-            defender.hp = 0; 
-            return; 
-        } else {
-            console.log(`${defender.name} has survived.`);
-        }
+        defender.hp <= 0 
+        ? (console.log(`${defender.name} has fainted.`), defender.hp = 0) 
+        : console.log(`${defender.name} has survived.`);
     }
     const pokemon1 = new Pokemon('bulbasaur', 'grass', 200, 10, 40);
     const pokemon2 = new Pokemon('charizard', 'fire', 200, 10, 40);
