@@ -94,10 +94,25 @@ class Pokemon {
     }
 
 
-    function move(attacker, defender) {
+    function move(attacker, defender, moveType) {
+        let baseDamage = attacker.attack;
+
+        switch (moveType) {
+            case '1':
+                baseDamage -= 5; 
+                break;
+            case '2':
+                baseDamage -= 2; 
+                break;
+            case '3':
+                break;
+            default:
+                console.log("Invalid move type selected.");
+                return;
+        }
+
         const damageModifier = typeAdvantage(attacker.type, defender.type);
     
-        const baseDamage = attacker.attack;
         const critChance = 0.1;
     
         const isCrit = Math.random() < critChance;
@@ -111,11 +126,13 @@ class Pokemon {
         }
     
         defender.hp -= finalDamage;
+
+        let fullHp = Math.max(0, defender.hp + defender.defense);
     
-        console.log(`${attacker.name} attacked ${defender.name} for ${finalDamage} damage. ${defender.name} has ${defender.hp + defender.defense} HP left.`);
-    
-        defender.hp <= 0 
-        ? (console.log(`${defender.name} has fainted.`), defender.hp = 0) 
+        console.log(`${attacker.name} attacked ${defender.name} for ${finalDamage} damage. ${defender.name} has ${fullHp} HP left.`);
+        
+        fullHp <= 0
+        ? (console.log(`${defender.name} has fainted.`))
         : console.log(`${defender.name} has survived.`);
     }
     const pokemon1 = new Pokemon('bulbasaur', 'grass', 200, 10, 40);
@@ -124,23 +141,26 @@ class Pokemon {
 
     let gameOver = false;
     while (!gameOver) {
-        let moves = prompt("Please select a move:\n 1 for Move 1 (low damage) \n 2 for Move 2 (medium damage) \n 3 for Move 3 (high damage)");
+        let moveChoice = prompt("Please select a move:\n 1 for Move 1 (low damage) \n 2 for Move 2 (medium damage) \n 3 for Move 3 (high damage)");
         
-        let damageModifier;
-        switch(moves) {
-            case '1':
-                damageModifier = 1;
-                break;
-            case '2':
-                damageModifier = 2;
-                break;
-            case '3':
-                damageModifier = 3;
-                break;
-            default:
-                console.log("Invalid input. Please try again.");
-                continue;  
-        }
+        if (moveChoice === '1' || moveChoice === '2' || moveChoice === '3') {
+           
+            move(pokemon1, pokemon2, moveChoice);
     
-        gameOver = battle(pokemon1, pokemon2);
+            if (pokemon2.hp + pokemon2.defense <= 0) {
+                console.log(`${pokemon1.name} is the winner! Game over.`);
+                gameOver = true;
+            }
+    
+            if (!gameOver) {
+                move(pokemon2, pokemon1, moveChoice);
+    
+                if (pokemon1.hp + pokemon1.defense <= 0) {
+                    console.log(`${pokemon2.name} is the winner! Game over.`);
+                    gameOver = true;
+                }
+            }
+        } else {
+            console.log("Invalid input. Please try again.");
+        }
     }
