@@ -141,26 +141,29 @@ class Pokemon {
 
     let gameOver = false;
     while (!gameOver) {
-        let moveChoice = prompt("Please select a move:\n 1 for Move 1 (low damage) \n 2 for Move 2 (medium damage) \n 3 for Move 3 (high damage)");
+        try {
+            let moveChoice = prompt("Please select a move:\n 1 for Move 1 (low damage) \n 2 for Move 2 (medium damage) \n 3 for Move 3 (high damage)");
+            
+            if (moveChoice === '1' || moveChoice === '2' || moveChoice === '3') {
+                move(pokemon1, pokemon2, moveChoice);
         
-        if (moveChoice === '1' || moveChoice === '2' || moveChoice === '3') {
-           
-            move(pokemon1, pokemon2, moveChoice);
-    
-            if (pokemon2.hp + pokemon2.defense <= 0) {
-                console.log(`${pokemon1.name} is the winner! Game over.`);
-                gameOver = true;
-            }
-    
-            if (!gameOver) {
-                move(pokemon2, pokemon1, moveChoice);
-    
-                if (pokemon1.hp + pokemon1.defense <= 0) {
-                    console.log(`${pokemon2.name} is the winner! Game over.`);
+                if (pokemon2.hp + pokemon2.defense <= 0) {
+                    console.log(`${pokemon1.name} is the winner! Game over.`);
                     gameOver = true;
                 }
+        
+                if (!gameOver) {
+                    move(pokemon2, pokemon1, moveChoice);
+        
+                    if (pokemon1.hp + pokemon1.defense <= 0) {
+                        console.log(`${pokemon2.name} is the winner! Game over.`);
+                        gameOver = true;
+                    }
+                }
+            } else {
+                throw new Error("Invalid move choice. Please select 1, 2, or 3 only.");
             }
-        } else {
-            console.log("Invalid input. Please try again.");
+        } catch (error) {
+            console.log(error.message); 
         }
     }
