@@ -106,6 +106,7 @@ class Pokemon {
             case '3':
                 break;
             default:
+                alert("Invalid move type selected.");
                 console.log("Invalid move type selected.");
                 return;
         }
@@ -122,6 +123,7 @@ class Pokemon {
             const critMultiplier = 2; 
             finalDamage *= critMultiplier;
             alert(`${attacker.name} landed a critical hit!`);
+            console.log(`${attacker.name} landed a critical hit!`);
         }
 
         finalDamage = Math.round(finalDamage);
@@ -131,10 +133,11 @@ class Pokemon {
         let fullHp = Math.max(0, defender.hp + defender.defense);
     
         alert(`${attacker.name} attacked ${defender.name} for ${finalDamage} damage. ${defender.name} has ${fullHp} HP left.`);
+        console.log(`${attacker.name} attacked ${defender.name} for ${finalDamage} damage. ${defender.name} has ${fullHp} HP left.`);
         
         fullHp <= 0
-        ? (alert(`${defender.name} has fainted.`))
-        : alert(`${defender.name} has survived.`);
+        ? (alert(`${defender.name} has fainted.`), console.log(`${defender.name} has fainted.`))
+        : (alert(`${defender.name} has survived.`), console.log(`${defender.name} has survived.`));
     }
 
 const pokemon1 = new Pokemon('bulbasaur', 'grass', 200, 10, 40);
@@ -149,9 +152,8 @@ while (!validChoice) {
         let userPokemonChoice = prompt("Choose your Pokémon:\n1 for Bulbasaur (Grass)\n2 for Charmander (Fire)\n3 for Squirtle (Water)");
 
         if (userPokemonChoice === null) {
-            confirm("You canceled the game. Returning to the main page.");
-            window.location.href = 'main.html'; 
-            return;
+            confirm("You canceled the game.");
+            break;
         }
 
         if (userPokemonChoice === '1') {
@@ -171,49 +173,43 @@ while (!validChoice) {
     }
 }
 
-const allPokemons = [pokemon1, pokemon2, pokemon3];
-let opponentPokemon = allPokemons.filter(pokemon => pokemon !== userPokemon)[Math.floor(Math.random() * 2)];
+if (userPokemon) {
+    const allPokemons = [pokemon1, pokemon2, pokemon3];
+    let opponentPokemon = allPokemons.filter(pokemon => pokemon !== userPokemon)[Math.floor(Math.random() * 2)];
 
-alert(`Your opponent is ${opponentPokemon.name}! Get ready for battle!`);
+    alert(`Your opponent is ${opponentPokemon.name}! Get ready for battle!`);
+    console.log(`Your opponent is ${opponentPokemon.name}! Get ready for battle!`);
 
+    let gameOver = false;
+    while (!gameOver) {
+        try {
+            let moveChoice = prompt("Please select a move:\n 1 for Move 1 (low damage) \n 2 for Move 2 (medium damage) \n 3 for Move 3 (high damage)");
 
-let gameOver = false;
-while (!gameOver) {
-    try {
-        
-        if (gameOver) {
-            break;
-        }
-
-        let moveChoice = prompt("Please select a move:\n 1 for Move 1 (low damage) \n 2 for Move 2 (medium damage) \n 3 for Move 3 (high damage)");
-
-        if (moveChoice === null) {
-            confirm("You canceled the game. Returning to the main page.");
-            window.location.href = 'main.html'; 
-            return;
-        }
-
-        if (moveChoice === '1' || moveChoice === '2' || moveChoice === '3') {
-            let battleOver = battle(userPokemon, opponentPokemon, moveChoice);
-
-            if (battleOver) {
-                gameOver = true;
-                window.location.href = 'main.html'; 
+            if (moveChoice === null) {
+                confirm("You canceled the game.");
                 break;
             }
 
-            battleOver = battle(opponentPokemon, userPokemon, moveChoice);
-            if (battleOver) {
-                gameOver = true;
-                window.location.href = 'main.html'; 
-                break;
-            }
+            if (moveChoice === '1' || moveChoice === '2' || moveChoice === '3') {
+                let battleOver = battle(userPokemon, opponentPokemon, moveChoice);
 
-        } else {
-            throw new Error("Invalid move choice. Please select 1, 2, or 3 only.");
+                if (battleOver) {
+                    gameOver = true;
+                }
+
+                battleOver = battle(opponentPokemon, userPokemon, moveChoice);
+                if (battleOver) {
+                    gameOver = true;
+                }
+            } else {
+                throw new Error("Invalid move choice. Please select 1, 2, or 3 only.");
+            }
+        } catch (error) {
+            console.log(error.message);
+            alert("Invalid move choice. Please select 1, 2, or 3 only.");
         }
-    } catch (error) {
-        console.log(error.message);
-        alert("Invalid move choice. Please select 1, 2, or 3 only.");
     }
+} else {
+    alert("You canceled the Pokémon selection. The game will now exit.");
+    console.log("User canceled the Pokémon selection. The game has ended.");
 }
